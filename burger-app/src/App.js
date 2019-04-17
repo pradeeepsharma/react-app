@@ -1,30 +1,60 @@
 import React, { Component } from 'react';
-import {UserInput} from './User/UserInput'; 
-import UserOutput from './User/UserOuput'
 
-import './App.css';
+import {Person} from './Person/Person';
+import './Person/person.css';
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state = {userInput:"", outputOne:""}
+    this.state = {
+      userInput: "",
+      outputOne: "",
+      persons: [
+        { id: '23455', name: 'Max', age: '31' },
+        { id: '23456', name: 'Tax', age: '26' },
+        { id: '23457', name: 'Saz', age: '41' }
+      ]
+    }
 
   };
-  inputHandler=(event)=>{
+  componentDidMount(){
+    fetch('https://swapi.co/api/people/').then(results=>{
+        return results.json();
+    }).then(data=>{
+      this.setState({persons:data.results})
+      data.results.map((elem)=>{
+        console.log(elem)
+      })
+      // Object.keys(data).map(element=>{
+      //     console.log(element.name);
+      //   })
+    })
+}
+  inputHandler = (event) => {
     const userInput = event.target.value;
-    this.setState({userInput:userInput})
+    this.setState({ userInput: userInput })
   };
-  clickHandler=()=>{
-     this.setState({outputOne:this.state.userInput})
+  clickHandler = () => {
+    this.setState({ outputOne: this.state.userInput })
   };
+
+  iterateSome = () => {
+    let value = "";
+    this.state.persons.forEach(person => {
+      value = person.name;
+    })
+    return value;
+  };
+
   render() {
-    return (
+      return (
       <div className="App">
-        <UserInput inputHandler={this.inputHandler}/>
-        <UserOutput name2={this.state.outputOne} clickHandler={this.clickHandler}/>
-       
+        {this.state.persons.map(element => {
+          return <Person name={element.name} age={element.age} id={element.id} />
+        })
+        }
       </div>
-    );
+    )
   }
 }
 
